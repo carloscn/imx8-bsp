@@ -4,7 +4,7 @@ source build.cfg
 
 if [ ! -d "imx-optee-client" ]; then
 	echo "[INFO] imx-optee-os does not exist, Downloading imx-optee-client..."
-    git clone https://github.com/nxp-imx/imx-optee-client.git -b imx_5.4.70_2.3.0
+    git clone https://github.com/nxp-imx/imx-optee-client.git -b ${OPTEE_CLIENT_BRANCH} --depth=1
 fi
 
 if [ $? -eq 0 ]; then

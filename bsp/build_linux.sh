@@ -4,7 +4,7 @@ source build.cfg
 
 if [ ! -d "linux-imx" ]; then
 	echo "[INFO] linux does not exist, Downloading linux..."
-    git clone https://github.com/nxp-imx/linux-imx.git -b imx_5.4.70_2.3.0
+    git clone https://github.com/nxp-imx/linux-imx.git -b ${LINUX_BRANCH} --depth=1
 fi
 if [ $? -eq 0 ]; then
     echo "[INFO] Pull linux-imx done!"

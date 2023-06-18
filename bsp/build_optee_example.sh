@@ -4,7 +4,7 @@ source build.cfg
 
 if [ ! -d "optee_examples" ]; then
 	echo "[INFO] imx-optee-os does not exist, Downloading optee_examples..."
-    git clone https://github.com/linaro-swg/optee_examples.git
+    git clone https://github.com/linaro-swg/optee_examples.git --depth=1
 fi
 
 if [ $? -eq 0 ]; then

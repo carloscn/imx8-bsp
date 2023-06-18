@@ -4,7 +4,7 @@ source build.cfg
 
 if [ ! -d "uboot-imx" ]; then
 	echo "[INFO] uboot does not exist, Downloading uboot..."
-    git clone https://github.com/nxp-imx/uboot-imx.git -b imx_v2020.04_5.4.70_2.3.0
+    git clone https://github.com/nxp-imx/uboot-imx.git -b ${UBOOT_BRANCH} --depth=1
 fi
 
 if [ $? -eq 0 ]; then

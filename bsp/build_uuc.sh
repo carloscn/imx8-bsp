@@ -4,7 +4,7 @@ source build.cfgimx-uuc
 
 if [ ! -d "imx-uuc" ]; then
 	echo "[INFO] imx-uuc does not exist, Downloading imx-uuc..."
-    git clone https://github.com/nxp-imx/imx-uuc.git
+    git clone https://github.com/nxp-imx/imx-uuc.git --depth=1
 fi
 if [ $? -eq 0 ]; then
     echo "[INFO] Pull imx-uuc done!"
