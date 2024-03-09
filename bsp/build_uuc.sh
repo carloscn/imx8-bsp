@@ -1,6 +1,6 @@
 # !/bin/bash
 
-source build.cfgimx-uuc
+source build.cfg
 
 if [ ! -d "imx-uuc" ]; then
 	echo "[INFO] imx-uuc does not exist, Downloading imx-uuc..."
@@ -18,4 +18,7 @@ make clean
 make
 popd
 
-echo "[INFO] Build imx-uuc done!"
+wget https://github.com/nxp-imx/mfgtools/releases/download/uuu_1.5.165/uuu
+chmod +x uuu
+
+echo "[INFO] Build mfgtools done!"

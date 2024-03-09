@@ -14,6 +14,7 @@ else
 fi
 
 pushd imx-atf
+make distclean
 make PLAT=imx8qm bl31
 popd
 

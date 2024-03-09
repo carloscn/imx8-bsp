@@ -7,3 +7,14 @@ uboot-imx
 optee_examples
 imx-uuc
 imx-mkimage
+temp
+temp/*
+rootfs_lsdk2012_yocto_tiny_arm64.cpio.gz
+image.ub
+flash.bin
+imx8_yocto_tiny_arm64.cpio.gz
+imx-scfw-porting-kit-1.7.4*
+mfgtools
+uuu
+firmware-imx-8.1.bin
+firmware-imx-8.1

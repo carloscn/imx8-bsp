@@ -15,7 +15,7 @@ fi
 
 pushd imx-optee-os
 export CROSS_COMPILE64=${CROSS_COMPILE}
-bash ./scripts/nxp_build.sh mx8mqevk
+bash ./scripts/nxp_build.sh imx-mx8mqevk
 popd
 
 echo "[INFO] Build imx-optee-os done!"
