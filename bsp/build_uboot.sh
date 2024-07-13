@@ -15,6 +15,8 @@ else
 fi
 
 pushd uboot-imx
+cp -rfv ../configs/0001-imx8mq-transform-changes-from-MiLian.patch .
+git apply --stat 0001-imx8mq-transform-changes-from-MiLian.patch
 make clean
 make CROSS_COMPILE=${CROSS_COMPILE} imx8mq_evk_defconfig
 make CROSS_COMPILE=${CROSS_COMPILE} -j16
