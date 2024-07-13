@@ -2,9 +2,9 @@
 
 source build.cfg
 
-if [ ! -d "imx-atf" ]; then
+if [ ! -d "atf-imx" ]; then
 	echo "[INFO] atf does not exist, Downloading atf..."
-    git clone https://github.com/nxp-imx/imx-atf.git -b ${ATF_BRANCH} --depth=1
+    git clone https://github.com/nxp-imx/imx-atf.git -b ${ATF_BRANCH} --depth=1 atf-imx
 fi
 if [ $? -eq 0 ]; then
     echo "[INFO] Pull atf done!"
@@ -13,9 +13,9 @@ else
     exit -1
 fi
 
-pushd imx-atf
+pushd atf-imx
 make distclean
-make PLAT=imx8qm bl31
+make PLAT=imx8qm bl31 -j8
 popd
 
 echo "[INFO] Build atf done!"

@@ -2,20 +2,20 @@
 
 source build.cfg
 
-if [ ! -d "imx-optee-os" ]; then
-	echo "[INFO] imx-optee-os does not exist, Downloading imx-optee-os..."
-    git clone https://github.com/nxp-imx/imx-optee-os.git -b ${OPTEE_OS_BRANCH} --depth=1
+if [ ! -d "optee-os-imx" ]; then
+	echo "[INFO] optee-os-imx does not exist, Downloading optee-os-imx..."
+    git clone https://github.com/nxp-imx/imx-optee-os.git -b ${OPTEE_OS_BRANCH} --depth=1 optee-os-imx
 fi
 if [ $? -eq 0 ]; then
-    echo "[INFO] Pull imx-optee-os done!"
+    echo "[INFO] Pull optee-os-imx done!"
 else
-    echo "[ERR] Pull imx-optee-os failed."
+    echo "[ERR] Pull optee-os-imx failed."
     exit -1
 fi
 
-pushd imx-optee-os
+pushd optee-os-imx
 export CROSS_COMPILE64=${CROSS_COMPILE}
-bash ./scripts/nxp_build.sh imx-mx8mqevk
+bash ./scripts/nxp_build.sh mx8mqevk
 popd
 
-echo "[INFO] Build imx-optee-os done!"
+echo "[INFO] Build optee-os-imx done!"

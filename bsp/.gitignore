@@ -1,6 +1,8 @@
 imx-atf
+atf-imx
 imx-optee-client
 imx-optee-os
+optee-os-imx
 imx-optee-test
 linux-imx
 uboot-imx

@@ -20,7 +20,7 @@ cp -rfv ../uboot-imx/spl/u-boot-spl.bin                                         
 cp -rfv ../uboot-imx/u-boot-nodtb.bin                                                     ./iMX8QM/              && \
 cp -rfv ../uboot-imx/u-boot.bin                                                           ./iMX8QM/              && \
 cp -rfv ../uboot-imx/arch/arm/dts/imx8mp-evk.dtb                                          ./iMX8QM/              && \
-cp -rfv ../imx-atf/build/imx8qm/release/bl31.bin                                          ./iMX8QM/              && \
+cp -rfv ../atf-imx/build/imx8qm/release/bl31.bin                                          ./iMX8QM/              && \
 cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_1d_dmem.bin            ./iMX8QM/              && \
 cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_1d_dmem.bin            ./iMX8QM/              && \
 cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_2d_dmem.bin            ./iMX8QM/              && \
