@@ -1,20 +1,22 @@
-From 4bb8df82b9400be856a6533fc6ac08766c1afe42 Mon Sep 17 00:00:00 2001
-From: carlos <carlos.wei.hk@gmail.com>
-Date: Sat, 13 Jul 2024 09:20:45 +0800
-Subject: [PATCH] [imx8mq] transform changes from MiLian
+From 19fb4aece09bfb1c4b385e3f47a832bc4fbde0e9 Mon Sep 17 00:00:00 2001
+From: Carlos Wei <carlos.wei.hk@gmail.com>
+Date: Fri, 12 Jul 2024 21:27:20 -0700
+Subject: [PATCH] [imx8mq] bring-up MYD-JX8MX board
 
-on imx_v2018.03_4.14.98_2.0.0_ga
+1. DDR Timing
+2. Some driver
+3. Build config
 
-Signed-off-by: carlos <carlos.wei.hk@gmail.com>
+Signed-off-by: Carlos Wei <carlos.wei.hk@gmail.com>
 ---
  arch/arm/dts/fsl-imx8mq-evk.dts            |    4 +-
- board/freescale/imx8mq_evk/lpddr4_timing.c | 2010 +++++++++-----------
+ board/freescale/imx8mq_evk/lpddr4_timing.c | 2289 +++++++++-----------
  board/freescale/imx8qm_mek/imx8qm_mek.c    |    2 +-
  configs/imx8mq_evk_defconfig               |    1 -
  drivers/thermal/nxp_tmu.c                  |    1 +
  include/configs/imx8mq_evk.h               |    8 +-
  lib/avb/libavb/avb_cmdline.c               |    4 +-
- 7 files changed, 885 insertions(+), 1145 deletions(-)
+ 7 files changed, 979 insertions(+), 1330 deletions(-)
 
 diff --git a/arch/arm/dts/fsl-imx8mq-evk.dts b/arch/arm/dts/fsl-imx8mq-evk.dts
 index 6b713f9..dd94f82 100644
@@ -35,10 +37,296 @@ index 6b713f9..dd94f82 100644
  		spi-nor,ddr-quad-read-dummy = <6>;
  	};
 diff --git a/board/freescale/imx8mq_evk/lpddr4_timing.c b/board/freescale/imx8mq_evk/lpddr4_timing.c
-index c73be15..ba755fe 100644
+index c73be15..8998a4c 100644
 --- a/board/freescale/imx8mq_evk/lpddr4_timing.c
 +++ b/board/freescale/imx8mq_evk/lpddr4_timing.c
-@@ -193,201 +193,172 @@ struct dram_cfg_param lpddr4_ddrc_cfg[] = {
+@@ -1,393 +1,273 @@
+ /*
+  * Copyright 2018 NXP
+  *
+- * SPDX-License-Identifier: GPL-2.0+
++ * SPDX-License-Identifier:	GPL-2.0+
++ *
++ * Generated code from MX8M_DDR_tool
++ * Align with uboot-imx_v2018.03_4.14.78_1.0.0_ga
+  */
++
+ #include <linux/kernel.h>
+-#include <common.h>
+-#include <asm/arch/ddr.h>
+ #include <asm/arch/imx8m_ddr.h>
+ 
+-#define LPDDR4_HDT_CTL_2D 	0xC8  /* stage completion */
+-#define LPDDR4_HDT_CTL_3200_1D	0xC8  /* stage completion */
+-#define LPDDR4_HDT_CTL_400_1D 	0xC8  /* stage completion */
+-#define LPDDR4_HDT_CTL_100_1D 	0xC8  /* stage completion */
+-
+-// 400/100 training seq
+-#define LPDDR4_TRAIN_SEQ_100 	0x121f
+-#define LPDDR4_TRAIN_SEQ_400 	0x121f
+-
+-//2D share & weight
+-#define LPDDR4_2D_WEIGHT 	0x1f7f
+-#define LPDDR4_2D_SHARE		1
+-#define LPDDR4_CATRAIN_3200_1d	0
+-#define LPDDR4_CATRAIN_400	0
+-#define LPDDR4_CATRAIN_100	0
+-#define LPDDR4_CATRAIN_3200_2d	0
+-
+-#define WR_POST_EXT_3200  /* recommened to define */
+-
+-/* for LPDDR4 Rtt */
+-#define LPDDR4_RTT40	6
+-#define LPDDR4_RTT48	5
+-#define LPDDR4_RTT60	4
+-#define LPDDR4_RTT80	3
+-#define LPDDR4_RTT120	2
+-#define LPDDR4_RTT240	1
+-#define LPDDR4_RTT_DIS	0
+-
+-/* for LPDDR4 Ron */
+-#define LPDDR4_RON34	7
+-#define LPDDR4_RON40	6
+-#define LPDDR4_RON48	5
+-#define LPDDR4_RON60	4
+-#define LPDDR4_RON80	3
+-
+-#define LPDDR4_PHY_ADDR_RON60	0x1
+-#define LPDDR4_PHY_ADDR_RON40   0x3
+-#define LPDDR4_PHY_ADDR_RON30   0x7
+-#define LPDDR4_PHY_ADDR_RON24   0xf
+-#define LPDDR4_PHY_ADDR_RON20   0x1f
+-
+-/* for read channel */
+-#define LPDDR4_RON			LPDDR4_RON40 /* MR3[5:3] */
+-#define LPDDR4_PHY_RTT			30
+-#define LPDDR4_PHY_VREF_VALUE 		17
+-
+-/* for write channel */
+-#define LPDDR4_PHY_RON			30
+-#define LPDDR4_PHY_ADDR_RON         	LPDDR4_PHY_ADDR_RON40
+-#define LPDDR4_RTT_DQ			LPDDR4_RTT40 /* MR11[2:0] */
+-#define LPDDR4_RTT_CA			LPDDR4_RTT40 /* MR11[6:4] */
+-#define LPDDR4_RTT_CA_BANK0		LPDDR4_RTT40 /* MR11[6:4] */
+-#define LPDDR4_RTT_CA_BANK1		LPDDR4_RTT40 /* LPDDR4_RTT_DIS */
+-#define LPDDR4_VREF_VALUE_CA		((1 << 6) | (0xd)) /* MR12 */
+-#define LPDDR4_VREF_VALUE_DQ_RANK0	((1 << 6) | (0xd)) /* MR14 */
+-#define LPDDR4_VREF_VALUE_DQ_RANK1	((1 << 6) | (0xd)) /* MR14 */
+-#define LPDDR4_MR22_RANK0           	((0 << 5) | (1 << 4) | (0 << 3) | (LPDDR4_RTT40)) /* MR22: OP[5:3]ODTD-CA,CS,CK */
+-#define LPDDR4_MR22_RANK1		((0 << 5) | (1 << 4) | (0 << 3) | (LPDDR4_RTT40)) /* MR22: OP[5:3]ODTD-CA,CS,CK */
+-#define LPDDR4_MR3_PU_CAL		1 /* MR3[0] */
+-
+-struct dram_cfg_param lpddr4_ddrc_cfg[] = {
+-	/* Start to config, default 3200mbps */
+-	{ DDRC_DBG1(0), 0x00000001 },
+-	{ DDRC_PWRCTL(0), 0x00000001 },
+-	{ DDRC_MSTR(0), 0xa3080020 },
+-	{ DDRC_MSTR2(0), 0x00000000 },
+-	{ DDRC_RFSHTMG(0), 0x006100E0 },
+-	{ DDRC_INIT0(0), 0xC003061B },
+-	{ DDRC_INIT1(0), 0x009D0000 },
+-	{ DDRC_INIT3(0), 0x00D4002D },
+-#ifdef WR_POST_EXT_3200
+-	{ DDRC_INIT4(0), 0x00330008 },
+-#else
+-	{ DDRC_INIT4(0), 0x00310008 },
+-#endif
+-	{ DDRC_INIT6(0), 0x0066004a },
+-	{ DDRC_INIT7(0), 0x0006004a },
+-
+-	{ DDRC_DRAMTMG0(0), 0x1A201B22 },
+-	{ DDRC_DRAMTMG1(0), 0x00060633 },
+-	{ DDRC_DRAMTMG3(0), 0x00C0C000 },
+-	{ DDRC_DRAMTMG4(0), 0x0F04080F },
+-	{ DDRC_DRAMTMG5(0), 0x02040C0C },
+-	{ DDRC_DRAMTMG6(0), 0x01010007 },
+-	{ DDRC_DRAMTMG7(0), 0x00000401 },
+-	{ DDRC_DRAMTMG12(0), 0x00020600 },
+-	{ DDRC_DRAMTMG13(0), 0x0C100002 },
+-	{ DDRC_DRAMTMG14(0), 0x000000E6 },
+-	{ DDRC_DRAMTMG17(0), 0x00A00050 },
+-
+-	{ DDRC_ZQCTL0(0), 0x03200018 },
+-	{ DDRC_ZQCTL1(0), 0x028061A8 },
+-	{ DDRC_ZQCTL2(0), 0x00000000 },
+-
+-	{ DDRC_DFITMG0(0), 0x0497820A },
+-	{ DDRC_DFITMG1(0), 0x00080303 },
+-	{ DDRC_DFIUPD0(0), 0xE0400018 },
+-	{ DDRC_DFIUPD1(0), 0x00DF00E4 },
+-	{ DDRC_DFIUPD2(0), 0x80000000 },
+-	{ DDRC_DFIMISC(0), 0x00000011 },
+-	{ DDRC_DFITMG2(0), 0x0000170A },
+-
+-	{ DDRC_DBICTL(0), 0x00000001 },
+-	{ DDRC_DFIPHYMSTR(0), 0x00000001 },
+-	{ DDRC_RANKCTL(0), 0x00000c99 },
+-	{ DDRC_DRAMTMG2(0), 0x070E171a },
+-
+-	/* address mapping */
+-	{ DDRC_ADDRMAP0(0), 0x00000015 },
+-	{ DDRC_ADDRMAP3(0), 0x00000000 },
+-	{ DDRC_ADDRMAP4(0), 0x00001F1F },
+-	/* bank interleave */
+-	{ DDRC_ADDRMAP1(0), 0x00080808 },
+-	{ DDRC_ADDRMAP5(0), 0x07070707 },
+-	{ DDRC_ADDRMAP6(0), 0x08080707 },
+-
+-	/* performance setting */
+-	{ DDRC_ODTCFG(0), 0x0b060908 },
+-	{ DDRC_ODTMAP(0), 0x00000000 },
+-	{ DDRC_SCHED(0), 0x29511505 },
+-	{ DDRC_SCHED1(0), 0x0000002c },
+-	{ DDRC_PERFHPR1(0), 0x5900575b },
+-	/* 150T starve and 0x90 max tran len */
+-	{ DDRC_PERFLPR1(0), 0x90000096 },
+-	/* 300T starve and 0x10 max tran len */
+-	{ DDRC_PERFWR1(0), 0x1000012c },
+-	{ DDRC_DBG0(0), 0x00000016 },
+-	{ DDRC_DBG1(0), 0x00000000 },
+-	{ DDRC_DBGCMD(0), 0x00000000 },
+-	{ DDRC_SWCTL(0), 0x00000001 },
+-	{ DDRC_POISONCFG(0), 0x00000011 },
+-	{ DDRC_PCCFG(0), 0x00000111 },
+-	{ DDRC_PCFGR_0(0), 0x000010f3 },
+-	{ DDRC_PCFGW_0(0), 0x000072ff },
+-	{ DDRC_PCTRL_0(0), 0x00000001 },
+-	/* disable Read Qos*/
+-	{ DDRC_PCFGQOS0_0(0), 0x00000e00 },
+-	{ DDRC_PCFGQOS1_0(0), 0x0062ffff },
+-	/* disable Write Qos*/
+-	{ DDRC_PCFGWQOS0_0(0), 0x00000e00 },
+-	{ DDRC_PCFGWQOS1_0(0), 0x0000ffff },
+-
+-	/* Frequency 1: 400mbps */
+-	{ DDRC_FREQ1_DRAMTMG0(0), 0x0d0b010c },
+-	{ DDRC_FREQ1_DRAMTMG1(0), 0x00030410 },
+-	{ DDRC_FREQ1_DRAMTMG2(0), 0x0305090c },
+-	{ DDRC_FREQ1_DRAMTMG3(0), 0x00505006 },
+-	{ DDRC_FREQ1_DRAMTMG4(0), 0x05040305 },
+-	{ DDRC_FREQ1_DRAMTMG5(0), 0x0d0e0504 },
+-	{ DDRC_FREQ1_DRAMTMG6(0), 0x0a060004 },
+-	{ DDRC_FREQ1_DRAMTMG7(0), 0x0000090e },
+-	{ DDRC_FREQ1_DRAMTMG14(0), 0x00000032 },
+-	{ DDRC_FREQ1_DRAMTMG15(0), 0x00000000 },
+-	{ DDRC_FREQ1_DRAMTMG17(0), 0x0036001b },
+-	{ DDRC_FREQ1_DERATEINT(0), 0x7e9fbeb1 },
+-	{ DDRC_FREQ1_DFITMG0(0), 0x03818200 },
+-	{ DDRC_FREQ1_DFITMG2(0), 0x00000000 },
+-	{ DDRC_FREQ1_RFSHTMG(0), 0x000C001c },
+-	{ DDRC_FREQ1_INIT3(0), 0x00840000 },
+-	{ DDRC_FREQ1_INIT4(0), 0x00310008 },
+-	{ DDRC_FREQ1_INIT6(0), 0x0066004a },
+-	{ DDRC_FREQ1_INIT7(0), 0x0006004a },
+-
+-	/* Frequency 2: 100mbps */
+-	{ DDRC_FREQ2_DRAMTMG0(0), 0x0d0b010c },
+-	{ DDRC_FREQ2_DRAMTMG1(0), 0x00030410 },
+-	{ DDRC_FREQ2_DRAMTMG2(0), 0x0305090c },
+-	{ DDRC_FREQ2_DRAMTMG3(0), 0x00505006 },
+-	{ DDRC_FREQ2_DRAMTMG4(0), 0x05040305 },
+-	{ DDRC_FREQ2_DRAMTMG5(0), 0x0d0e0504 },
+-	{ DDRC_FREQ2_DRAMTMG6(0), 0x0a060004 },
+-	{ DDRC_FREQ2_DRAMTMG7(0), 0x0000090e },
+-	{ DDRC_FREQ2_DRAMTMG14(0), 0x00000032 },
+-	{ DDRC_FREQ2_DRAMTMG17(0), 0x0036001b },
+-	{ DDRC_FREQ2_DERATEINT(0), 0x7e9fbeb1 },
+-	{ DDRC_FREQ2_DFITMG0(0), 0x03818200 },
+-	{ DDRC_FREQ2_DFITMG2(0), 0x00000000 },
+-	{ DDRC_FREQ2_RFSHTMG(0), 0x00030007 },
+-	{ DDRC_FREQ2_INIT3(0), 0x00840000 },
+-	{ DDRC_FREQ2_INIT4(0), 0x00310008 },
+-	{ DDRC_FREQ2_INIT6(0), 0x0066004a },
+-	{ DDRC_FREQ2_INIT7(0), 0x0006004a },
++struct dram_cfg_param ddr_ddrc_cfg[] = {
++	/** Initialize DDRC registers **/
++	{0x3d400304,0x1},
++	{0x3d400030,0x1},
++	{0x3d400000,0xa3080020},
++	{0x3d400028,0x0},
++	{0x3d400020,0x203},
++	{0x3d400024,0x186a000},
++	{0x3d400064,0x6100e0},
++	{0x3d4000d0,0xc003061c},
++	{0x3d4000d4,0x9e0000},
++	{0x3d4000dc,0xd4002d},
++	{0x3d4000e0,0x310008},
++	{0x3d4000e8,0x66004a},
++	{0x3d4000ec,0x16004a},
++	{0x3d400100,0x1a201b22},
++	{0x3d400104,0x60633},
++	{0x3d40010c,0xc0c000},
++	{0x3d400110,0xf04080f},
++	{0x3d400114,0x2040c0c},
++	{0x3d400118,0x1010007},
++	{0x3d40011c,0x401},
++	{0x3d400130,0x20600},
++	{0x3d400134,0xc100002},
++	{0x3d400138,0xe6},
++	{0x3d400144,0xa00050},
++	{0x3d400180,0xc3200018},
++	{0x3d400184,0x28061a8},
++	{0x3d400188,0x0},
++	{0x3d400190,0x497820a},
++	{0x3d400194,0x80303},
++	{0x3d4001a0,0xe0400018},
++	{0x3d4001a4,0xdf00e4},
++	{0x3d4001a8,0x80000000},
++	{0x3d4001b0,0x11},
++	{0x3d4001b4,0x170a},
++	{0x3d4001c0,0x1},
++	{0x3d4001c4,0x1},
++	{0x3d4000f4,0x639},
++	{0x3d400108,0x70e1214},
++	{0x3d400200,0x16},
++	{0x3d40020c,0x0},
++	{0x3d400210,0x1f1f},
++	{0x3d400204,0x80808},
++	{0x3d400214,0x7070707},
++	{0x3d400218,0xf070707},
++	{0x3d402020,0x1},
++	{0x3d402024,0x518b00},
++	{0x3d402050,0x20d040},
++	{0x3d402064,0x14002f},
++	{0x3d4020dc,0x940009},
++	{0x3d4020e0,0x310000},
++	{0x3d4020e8,0x66004a},
++	{0x3d4020ec,0x16004a},
++	{0x3d402100,0xb070508},
++	{0x3d402104,0x3040b},
++	{0x3d402108,0x305090c},
++	{0x3d40210c,0x505000},
++	{0x3d402110,0x4040204},
++	{0x3d402114,0x2030303},
++	{0x3d402118,0x1010004},
++	{0x3d40211c,0x301},
++	{0x3d402130,0x20300},
++	{0x3d402134,0xa100002},
++	{0x3d402138,0x31},
++	{0x3d402144,0x220011},
++	{0x3d402180,0xc0a70006},
++	{0x3d402190,0x3858202},
++	{0x3d402194,0x80303},
++	{0x3d4021b4,0x502},
++	{0x3d400244,0x0},
++	{0x3d400250,0x29001505},
++	{0x3d400254,0x2c},
++	{0x3d40025c,0x5900575b},
++	{0x3d400264,0x90000096},
++	{0x3d40026c,0x1000012c},
++	{0x3d400300,0x16},
++	{0x3d400304,0x0},
++	{0x3d40030c,0x0},
++	{0x3d400320,0x1},
++	{0x3d40036c,0x11},
++	{0x3d400400,0x111},
++	{0x3d400404,0x10f3},
++	{0x3d400408,0x72ff},
++	{0x3d400490,0x1},
++	{0x3d400494,0xe00},
++	{0x3d400498,0x62ffff},
++	{0x3d40049c,0xe00},
++	{0x3d4004a0,0xffff},
  };
  
  /* PHY Initialize Configuration */
@@ -403,7 +691,7 @@ index c73be15..ba755fe 100644
  	{ 0x200b2, 0x0 },
  	{ 0x1200b2, 0x0 },
  	{ 0x2200b2, 0x0 },
-@@ -1108,977 +1079,746 @@ struct dram_cfg_param lpddr4_ddrphy_trained_csr[] = {
+@@ -1108,977 +988,746 @@ struct dram_cfg_param lpddr4_ddrphy_trained_csr[] = {
  	{ 0x13730, 0x0 },
  	{ 0x13830, 0x0 },
  };
@@ -2193,5 +2481,5 @@ index ce33159..3f4b99a 100644
  
      switch (hashtree_error_mode) {
 -- 
-2.34.1
+2.17.1
 

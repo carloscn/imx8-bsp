@@ -14,8 +14,9 @@ else
 fi
 
 pushd linux-imx
+cp -rfv configs/imx8_defconfig arch/arm64/configs/
 make clean
-make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 imx_v8_defconfig
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 imx8_defconfig
 make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 -j16
 popd
 
