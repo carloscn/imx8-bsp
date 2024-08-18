@@ -24,5 +24,5 @@ docker run \
     --hostname buildserver \
     -it \
     -v ${PWD}/yocto:/home/build/yocto \
-    yoctocontainer
+    myd_imx8_yoctocontainer
 utils_check_ret $? "Container run"
