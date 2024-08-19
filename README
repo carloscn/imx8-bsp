@@ -1,0 +1,17 @@
+# imx8 bsp
+
+myd-jx8mpq is the yocto project that is forked from https://github.com/carloscn/myir-imx-manifest and it is fixed NXP url issue comparing original myir manifest.
+
+## How to build it
+
+`cd myd-jx8mpq`
+
+`bash build_docker.sh`
+
+`bash run_docker.sh`
+
+then in the docker console:
+
+`docker_build_yocto.sh`
+
+All the images will be outputted!
