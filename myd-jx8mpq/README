@@ -1,0 +1,24 @@
+# Note,
+
+## yocto build bug
+
+1.  myir-image-full-1.0-r0 do_rootfs: The postinstall intercept hook 'update_gtk_immodules_cache' failed, details in /home/build/yocto/build-xwayland/tmp/work/myd_jx8mp-poky-linux/myir-image-full/1.0-r0/temp/log.do_rootfs
+
+`vim ./poky/scripts/postinst-intercepts/update_gtk_immodules_cache`
+
+and add to the file.
+
+`mkdir -p $D${libdir}/gtk-3.0/3.0.0`
+
+
+2. myir-image-core-1.0-r0 do_rootfs: The postinstall intercept hook 'update_mime_database' failed
+when /home/build/yocto/build-xwayland/tmp/work/myd_jx8mp-poky-linux/myir-image-core/1.0-r0/temp/log.do_rootfs
+
+
+`vim poky/scripts/postinst-intercepts/update_mime_database`
+
+and 
+
+comment all
+
+
