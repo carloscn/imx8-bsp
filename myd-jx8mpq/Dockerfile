@@ -21,7 +21,7 @@ RUN \
     expect flex ftp-upload gdisk libattr1-dev libcap-dev libfdt-dev libftdi-dev libglib2.0-dev   \
     libgmp-dev libhidapi-dev libmpc-dev libpixman-1-dev libssl-dev libtool make mtools  samba   \
     netcat ninja-build  python-pyelftools rsync unzip uuid-dev xdg-utils xz-utils lzop  \
-    zlib1g-dev proxychains libqt5qml5 libqt5quick5 libqt5quickwidgets5 qml-module-qtquick2        \
+    zlib1g-dev proxychains libqt5qml5 libqt5quick5 libqt5quickwidgets5 qml-module-qtquick2 desktop-file-utils \
     libgsettings-qt1 xinetd tftp-hpa xclip aria2 minicom openssh-client openssh-server libncursesw5 -y && \
     rm -rf /var/lib/apt-lists/* && \
     echo "dash dash/sh boolean false" | debconf-set-selections && \
