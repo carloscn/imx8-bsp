@@ -29,27 +29,9 @@
 			};
 		};
 
-		initrd {
-			description = "initrd for arm64";
-			data = /incbin/("../imx8_yocto_tiny_arm64.cpio.gz");
-			type = "ramdisk";
-			arch = "arm64";
-			os = "linux";
-			compression = "none";
-			load = <0x43800000>;
-			entry = <0x43800000>;
-			hash {
-				algo = "sha256";
-			};
-			signature {
-				algo = "sha256,rsa2048";
-				key-name-hint = "dev";
-			};
-		};
-
         imx8-dtb {
             description = "imx8-dtb";
-            data = /incbin/("../linux-imx/arch/arm64/boot/dts/freescale/imx8mq-evk.dtb");
+            data = /incbin/("../linux-imx/arch/arm64/boot/dts/freescale/imx8mq-evk-root.dtb");
             type = "flat_dt";
             arch = "arm64";
             os = "linux";
@@ -66,10 +48,10 @@
 	};
 
 	configurations {
+		default = "imx8";
 		imx8 {
 			description = "config for imx8-dtb";
 			kernel = "kernel";
-			ramdisk = "initrd";
 			fdt = "imx8-dtb";
 			signature {
 				algo = "sha256,rsa2048";

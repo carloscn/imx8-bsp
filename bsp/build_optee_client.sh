@@ -14,8 +14,9 @@ else
     exit -1
 fi
 
+UTILS_OUT=${PWD}/optee-os-imx/build.mx8mqevk/export-ta_arm64
 pushd imx-optee-client
-
+make CC="${CROSS_COMPILE}gcc" CROSS_COMPILE="$CROSS_COMPILE" PLATFORM=k3 CFG_TEE_SUPP_LOG_LEVEL=2 RPMB_EMU=0 CFG_ARM64_core=y PKG_CONFIG=pkg-config
 popd
 
 echo "[INFO] Build imx-optee-client done!"
