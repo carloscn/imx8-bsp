@@ -27,6 +27,10 @@ else
     echo "[ERR] Build uboot-imx failed."
     exit -1
 fi
+
+cp -rfv ../configs/boot.cmd .
+mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "Boot Script" -d boot.cmd boot.scr
+
 popd
 
 echo "[INFO] Build uboot done!"

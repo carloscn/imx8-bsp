@@ -3,6 +3,7 @@
 source build.cfg
 
 DTB_FILE=imx8mq-evk-root.dtb
+BOOT_SCR=uboot-imx/boot.scr
 
 if [ ! -d "${UDISK}/BOOT/" ]; then
     echo "[ERROR] Directory ${UDISK}/BOOT/ does not exist. Exiting."
@@ -40,5 +41,7 @@ else
     echo "[ERROR] Failed to copy the device tree."
     exit 1
 fi
+
+cp -rfv ${BOOT_SCR} ${UDISK}/BOOT/
 
 sync
