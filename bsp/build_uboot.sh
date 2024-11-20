@@ -4,7 +4,7 @@ source build.cfg
 
 if [ ! -d "uboot-imx" ]; then
 	echo "[INFO] uboot does not exist, Downloading uboot..."
-    git clone https://github.com/carloscn/myir-imx8-uboot.git -b ${UBOOT_BRANCH} --depth=1 uboot-imx
+    git clone https://github.com/carloscn/myir-imx8mx-uboot -b ${UBOOT_BRANCH} --depth=1 uboot-imx
 fi
 
 if [ $? -eq 0 ]; then
@@ -29,7 +29,7 @@ else
 fi
 
 cp -rfv ../configs/boot.cmd .
-mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "Boot Script" -d boot.cmd boot.scr
+./tools/mkimage -A arm -O linux -T script -C none -a 0 -e 0 -n "Boot Script" -d boot.cmd boot.scr
 
 popd
 

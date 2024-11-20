@@ -1,4 +1,4 @@
-# !/bin/bash
+#!/bin/bash
 
 # Function: log messages
 log() {
@@ -15,5 +15,12 @@ utils_check_ret() {
     fi
 }
 
-docker build -t imx8bspcontainer .
-utils_check_ret $? "Container built! please run $ ./run_docker.sh "
+# Run container
+log "Starting to run the container"
+docker run \
+    --cap-add NET_ADMIN \
+    --hostname buildserver \
+    -it \
+    -v ${PWD}/bsp:/home/build/bsp \
+    imx8bspcontainer
+utils_check_ret $? "Container run"

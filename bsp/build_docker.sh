@@ -15,5 +15,5 @@ utils_check_ret() {
     fi
 }
 
-docker build -t imx8bspcontainer .
+docker build -t myd_imx8_yoctocontainer .
 utils_check_ret $? "Container built! please run $ ./run_docker.sh "
