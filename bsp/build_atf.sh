@@ -15,7 +15,7 @@ fi
 
 pushd atf-imx
 make distclean
-make PLAT=imx8qm bl31 -j8
+make PLAT=imx8mq bl31 -j8
 popd
 
 echo "[INFO] Build atf done!"

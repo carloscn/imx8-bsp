@@ -1,0 +1,25 @@
+From 21c0c515f654af381a80bfcfa7b8d3322955bafe Mon Sep 17 00:00:00 2001
+From: carlos <carlos.wei.hk@gmail.com>
+Date: Wed, 20 Nov 2024 17:10:24 +0800
+Subject: [PATCH] [uboot] fixed uImage large size limitation
+
+Signed-off-by: carlos <carlos.wei.hk@gmail.com>
+---
+ include/configs/imx8mq_evk.h | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/include/configs/imx8mq_evk.h b/include/configs/imx8mq_evk.h
+index 992b4c4..e5bf0c2 100755
+--- a/include/configs/imx8mq_evk.h
++++ b/include/configs/imx8mq_evk.h
+@@ -17,6 +17,7 @@
+ 
+ #define CONFIG_SPL_TEXT_BASE		0x7E1000
+ #define CONFIG_SPL_MAX_SIZE		(148 * 1024)
++#define CONFIG_SYS_BOOTM_LEN		(64 * SZ_1M)
+ #define CONFIG_SYS_MONITOR_LEN		(512 * 1024)
+ #define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_USE_SECTOR
+ #define CONFIG_SYS_MMCSD_RAW_MODE_U_BOOT_SECTOR	0x300
+-- 
+2.25.1
+

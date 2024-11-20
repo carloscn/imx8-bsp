@@ -13,34 +13,34 @@ else
     exit -1
 fi
 
+rm -rfv imx-mkimage/iMX8M/flash.bin
+
 pushd imx-mkimage
-mkdir -p iMX8QM
-cp -rfv ../uboot-imx/tools/mkimage                                                        ./iMX8QM/mkimage_uboot && \
-cp -rfv ../uboot-imx/spl/u-boot-spl.bin                                                   ./iMX8QM/              && \
-cp -rfv ../uboot-imx/u-boot-nodtb.bin                                                     ./iMX8QM/              && \
-cp -rfv ../uboot-imx/u-boot.bin                                                           ./iMX8QM/              && \
-cp -rfv ../uboot-imx/arch/arm/dts/imx8mp-evk.dtb                                          ./iMX8QM/              && \
-cp -rfv ../atf-imx/build/imx8qm/release/bl31.bin                                          ./iMX8QM/              && \
-cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_1d_dmem.bin            ./iMX8QM/              && \
-cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_1d_dmem.bin            ./iMX8QM/              && \
-cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_2d_dmem.bin            ./iMX8QM/              && \
-cp -rfv ../firmware-imx-8.1/firmware/ddr/synopsys/lpddr4_pmu_train_2d_imem.bin            ./iMX8QM/              && \
-cp -rfv ../firmware-imx-8.1/firmware/hdmi/cadence/signed_hdmi_imx8m.bin                   ./iMX8QM/              && \
-cp -rfv ../firmware-imx-8.1/firmware/seco/mx8qm-ahab-container.img                        ./iMX8QM/mx8qmb0-ahab-container.img && \
-cp -rfv ../imx-scfw-porting-kit-1.7.4/src/scfw_export_mx8qm_b0/build_mx8qm_b0/scfw_tcm.bin ./iMX8QM/
+mkdir -p iMX8M
+make clean
+cp -rfv ../uboot-imx/tools/mkimage                                                        ./iMX8M/mkimage_uboot && \
+cp -rfv ../configs/u-boot-spl.bin                                                         ./iMX8M/              && \
+cp -rfv ../uboot-imx/u-boot-nodtb.bin                                                     ./iMX8M/              && \
+cp -rfv ../uboot-imx/arch/arm/dts/fsl-imx8mq-evk.dtb                                      ./iMX8M/              && \
+cp -rfv ../atf-imx/build/imx8mq/release/bl31.bin                                          ./iMX8M/              && \
+cp -rfv ../optee-os-imx/build.mx8mqevk/tee.bin                                            ./iMX8M/              && \
+cp -rfv ../configs/lpddr4_pmu_train_*.bin                                                 ./iMX8M/              && \
+cp -rfv ../configs/signed_hdmi_imx8m.bin                                                  ./iMX8M/              && \
+cp -rfv ../configs/signed_dp_imx8m.bin                                                    ./iMX8M/
 if [ $? -ne 0 ]; then
     echo "[ERR] Copy binary failed."
     exit -1
 fi
-make clean
-make SOC=iMX8QM flash
+make SOC=iMX8MQ flash_evk_no_hdmi
 if [ $? -ne 0 ]; then
     echo "[ERR] make failed."
     exit -1
 fi
+md5sum iMX8M/flash.bin
 popd
 
-cp -rfv imx-mkimage/iMX8QM/flash.bin ./
-./uuu -b sd flash.bin
+cp -rfv imx-mkimage/iMX8M/flash.bin ./
+#./uuu -b sd flash.bin
+md5sum flash.bin
 
 echo "[INFO] Build imx-mkimage done!"

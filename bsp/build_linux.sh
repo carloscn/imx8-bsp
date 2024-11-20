@@ -15,9 +15,10 @@ fi
 
 pushd linux-imx
 #make clean
-#make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 myd_jx8mp_defconfig
-#make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 -j16
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 myd_jx8mp_defconfig
+make CROSS_COMPILE=${CROSS_COMPILE} ARCH=arm64 -j16
 cp -rfv ../configs/imx8_linux_arm64_noram.its ${PWD} && \
+pushd arch/arm64/boot && cat Image | gzip -n -f -9 > Image.gz && popd
 mkimage -f imx8_linux_arm64_noram.its uImage && chmod 777 uImage
 popd
 
