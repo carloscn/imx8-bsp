@@ -13,7 +13,7 @@ else
     exit -1
 fi
 
-rm -rfv imx-mkimage/iMX8M/flash.bin
+rm -rfv imx-mkimage/iMX8M/${IMAGE_NAME}
 
 pushd imx-mkimage
 mkdir -p iMX8M
@@ -31,16 +31,16 @@ if [ $? -ne 0 ]; then
     echo "[ERR] Copy binary failed."
     exit -1
 fi
-make SOC=iMX8MQ flash_evk_no_hdmi
+make SOC=iMX8MQ flash_evk
 if [ $? -ne 0 ]; then
     echo "[ERR] make failed."
     exit -1
 fi
-md5sum iMX8M/flash.bin
+md5sum iMX8M/${IMAGE_NAME}
 popd
 
-cp -rfv imx-mkimage/iMX8M/flash.bin ./
-#./uuu -b sd flash.bin
-md5sum flash.bin
+cp -rfv imx-mkimage/iMX8M/${IMAGE_NAME} ./
+#./uuu -b sd ${IMAGE_NAME}
+md5sum ${IMAGE_NAME}
 
 echo "[INFO] Build imx-mkimage done!"

@@ -18,8 +18,8 @@
 			arch = "arm64";
 			os = "linux";
 			compression = "gzip";
-			load = <0x40480000>;
-			entry = <0x40480000>;
+			load = <0x40600000>;
+			entry = <0x40600000>;
 			hash {
 				algo = "sha256";
 			};

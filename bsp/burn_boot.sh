@@ -3,7 +3,6 @@
 source build.cfg
 
 BOOT_DEV=/dev/sdb
-IMAGE_NAME=flash.bin
 
 if [ ! -e "${BOOT_DEV}" ]; then
     echo "[ERROR] Dev ${BOOT_DEV} does not exist. Exiting."

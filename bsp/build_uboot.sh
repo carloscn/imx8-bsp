@@ -4,7 +4,7 @@ source build.cfg
 
 if [ ! -d "uboot-imx" ]; then
 	echo "[INFO] uboot does not exist, Downloading uboot..."
-    git clone https://github.com/carloscn/myir-imx8mx-uboot -b ${UBOOT_BRANCH} --depth=1 uboot-imx
+    git clone https://github.com/carloscn/myir-imx8-uboot -b ${UBOOT_BRANCH} --depth=1 uboot-imx
 fi
 
 if [ $? -eq 0 ]; then
