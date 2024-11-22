@@ -11,7 +11,7 @@ RUN \
     echo "deb http://security.ubuntu.com/ubuntu/ bionic-security main restricted universe multiverse" >> /etc/apt/sources.list
 
 RUN apt update 
-RUN apt install -y apt-transport-https ca-certificates curl sudo vim \
+RUN apt install -y apt-transport-https ca-certificates curl sudo vim python rsync \
     tofrodos iproute2 gawk xvfb gcc git make net-tools libncurses5-dev zsh \
     tftpd zlib1g-dev flex bison libselinux1 gnupg wget diffstat chrpath socat cpio \
     autoconf libtool tar texinfo gcc-multilib build-essential libsdl1.2-dev libglib2.0-dev \
